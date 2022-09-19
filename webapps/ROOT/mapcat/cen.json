@@ -1,0 +1,52 @@
+/**/
+BMapGL._rd._cbk93521 && BMapGL._rd._cbk93521({
+	"bound_rank_params": {
+		"nc": 1
+	},
+	"content": {
+		"business": "\u6d93\u5a43\u7afb\u7035,\u9356\u6941\u82b1\u74ba,\u9357\u5ea2\u67ca\u741b",
+		"district": "\u5a13\u6fc5\u8151\u9356",
+		"name": "\u91cd\u5e86\u5e02",
+		"sup_bus": 1,
+		"sup_lukuang": 1,
+		"sup_subway": 1,
+		"type": 3,
+		"uid": 132
+	},
+	"current_city": {
+		"code": 132,
+		"geo": ".=2DAtGBD9YbUA;",
+		"level": 12,
+		"name": "\u91cd\u5e86\u5e02",
+		"sup": 1,
+		"sup_bus": 1,
+		"sup_business_area": 1,
+		"sup_lukuang": 1,
+		"sup_subway": 1,
+		"type": 2,
+		"up_province_name": "\u91cd\u5e86\u5e02"
+	},
+	"err_msg": "",
+	"hot_city": ["\u5317\u4eac\u5e02|131", "\u4e0a\u6d77\u5e02|289", "\u5e7f\u5dde\u5e02|257", "\u6df1\u5733\u5e02|340", "\u6210\u90fd\u5e02|75", "\u5929\u6d25\u5e02|332", "\u5357\u4eac\u5e02|315", "\u676d\u5dde\u5e02|179", "\u6b66\u6c49\u5e02|218", "\u91cd\u5e86\u5e02|132"],
+	"result": {
+		"data_security_filt_res": 0,
+		"error": 0,
+		"illegal": 0,
+		"qid": "",
+		"time": 0,
+		"type": 4,
+		"qt": "cen",
+		"b": "11721624.85035,3237456.79032;12000519.0859,3616394.01288",
+		"l": "10",
+		"ie": "utf-8",
+		"oue": "1",
+		"fromproduct": "jsapi",
+		"callback": "BMapGL._rd._cbk93521",
+		"ak": "R4pWCxXH9qm9ZpbnppGyxUGKydAd6esD",
+		"v": "gl",
+		"timeStamp": "1663429827717",
+		"sign": "58485e1a53f3"
+	},
+	"uii_err": 0,
+	"anti_auth": "WJdXB4ZMfIzg0GwYNNAVwVYAgUFHzdb@uxLLBEzTRzLt17XT1325C1xAwwyS8v7uvkGcuVtvvhguVtvyheuVtvCMGuVtvCQMuVtvIPcuVtvYvjuVtvZgMuVtv@vcuVtvc3CuVtcvY1SGpuxBt2o88GdFveGvuxtwfiKv7uvh3CuVtvhgMuxVVtvrMhuVtGccZcuVtegvcguxLLBEzTRzL"
+})

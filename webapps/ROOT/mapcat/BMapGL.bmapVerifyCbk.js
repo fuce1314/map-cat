@@ -1,0 +1,1 @@
+/**/BMapGL.bmapVerifyCbk && BMapGL.bmapVerifyCbk({"error":0})
