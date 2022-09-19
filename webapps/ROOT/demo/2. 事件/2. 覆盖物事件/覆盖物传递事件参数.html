@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>覆盖物传递事件参数</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+
+</html>
+<script>
+  var map = new BMapGL.Map('container');
+  map.centerAndZoom(new BMapGL.Point(106.447151,29.547786), 15);
+  map.enableScrollWheelZoom(true);
+  // 创建点
+  var marker = new BMapGL.Marker(new BMapGL.Point(106.447151,29.547786));
+  map.addOverlay(marker);
+  marker.addEventListener('click', overlayStyle);
+  // 创建圆
+  var circle = new BMapGL.Circle(new BMapGL.Point(116.415157, 39.914004), 500, {
+    strokeColor: 'blue',
+    strokeWeight: 6,
+    strokeOpacity: 0.5
+  });
+  map.addOverlay(circle);
+  circle.addEventListener('click', overlayStyle);
+  // 获取覆盖物属性
+  function overlayStyle(e) {
+    var p = e.target;
+    if (p instanceof BMapGL.Marker) {
+      alert('该覆盖物是点，点的坐标为：' + p.getPosition().lng + ',' + p.getPosition().lat);
+    } else if (p instanceof BMapGL.Circle) {
+      alert('该覆盖物是圆，其半径为：' + p.getRadius() + '圆中心点坐标：' + p.getCenter().lng + ',' + p.getCenter().lat);
+    } else {
+      alert('无法获知该覆盖物类型');
+    }
+  }
+</script>

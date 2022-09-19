@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>行政区划归属获取</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script type="text/javascript" src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+
+</html>
+<script>
+  var map = new BMapGL.Map('container');
+  var point = new BMapGL.Point(105.291, 37.094);
+  map.centerAndZoom(point, 5);
+  map.enableScrollWheelZoom(true);
+  map.addEventListener('click', function (e) {
+    var point = new BMapGL.Point(e.latlng.lng, e.latlng.lat);
+    var gc = new BMapGL.Geocoder();
+    gc.getLocation(point, function (rs) {
+      var opts = {
+        title: '行政区划归属',
+        width: 220,
+        height: 92
+      };
+      var infoStr = '<div>省：' + rs.addressComponents.province + '</div>'
+        + '<div>市：' + rs.addressComponents.city + '</div>'
+        + '<div>区：' + rs.addressComponents.district + '</div>';
+      var infoWindow = new BMapGL.InfoWindow(infoStr, opts);
+      map.openInfoWindow(infoWindow, point);
+    });
+  });
+</script>

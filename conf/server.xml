@@ -68,6 +68,8 @@
     -->
     <Connector port="81" protocol="HTTP/1.1"
                connectionTimeout="20000"
+			   URIEconding="UTF-8" 
+			   useBodyEncodingForURI="true"
                redirectPort="8443" />
     <!-- A "Connector" using the shared thread pool-->
     <!--

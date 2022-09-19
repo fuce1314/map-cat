@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>彩虹渐变线</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+  <script src="//code.bdstatic.com/npm/mapvgl@1.0.0-beta.141/dist/mapvgl.min.js"></script>
+  <script src="//bj.bcebos.com/v1/mapopen/cms/bmapgldemo/custom/mapstyleblack.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+
+</html>
+
+<script>
+  var map = new BMapGL.Map("container");
+  map.centerAndZoom(new BMapGL.Point(106.51239697428015, 29.617650121451547), 14);
+  map.enableScrollWheelZoom(true);
+  map.setTilt(55);
+
+  map.setMapStyleV2({ styleJson: Indigo });
+  var view = new mapvgl.View({
+    map: map
+  });
+
+  var lineLayer = new mapvgl.LineRainbowLayer({
+    style: 'road', // road, arrow, normal
+    width: 15,
+    color: ['#f00', '#f0f', '#0af', '#0a0', '#F09', '#a09', '#ff0', '#fd0', '#f90', '#f00']
+  });
+  view.addLayer(lineLayer);
+
+  var data = [{
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [106.46511017225053, 29.57895992140978],
+        [106.47775831382684, 29.588508247138453],
+        [106.47933933152389, 29.5964226147607],
+        [106.48825052217992, 29.609109418994105],
+        [106.51239697428015, 29.617650121451547],
+        [106.52030206276535, 29.61802690031047],
+        [106.5351061375649, 29.621920198526308],
+        [106.53970546177446, 29.620915490952946],
+        [106.54487970151023, 29.62392958331314],
+        [106.55839021637583, 29.626064510293723]
+      ]
+    }
+  }];
+  lineLayer.setData(data);
+
+</script>

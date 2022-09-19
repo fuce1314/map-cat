@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="http://localhost:81/mapcat/api.js"></script>
+  <script src="https://code.bdstatic.com/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+  <title>批量逆地址解析</title>
+  <style>
+    body,
+    html {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    #l-map {
+      height: 500px;
+      width: 100%;
+    }
+
+    #r-result {
+      width: 100%;
+      font-size: 14px;
+      line-height: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="l-map"></div>
+  <div id="r-result">
+    <input type="button" value="批量反地址解析+商圈" onclick="bdGEO(0)" />
+    <div id="result"></div>
+  </div>
+  <script>
+    // 百度地图API功能
+    var map = new BMapGL.Map("l-map");
+    map.centerAndZoom(new BMapGL.Point(116.328749, 40.026922), 13);
+    map.enableScrollWheelZoom(true);
+    var index = 0;
+    var myGeo = new BMapGL.Geocoder();
+    var adds = [
+      new BMapGL.Point(116.307852, 40.057031),
+      new BMapGL.Point(116.313082, 40.047674),
+      new BMapGL.Point(116.328749, 40.026922),
+      new BMapGL.Point(116.347571, 39.988698),
+      new BMapGL.Point(116.316163, 39.997753),
+      new BMapGL.Point(116.345867, 39.998333),
+      new BMapGL.Point(116.403472, 39.999411),
+      new BMapGL.Point(116.307901, 40.05901)
+    ];
+    for (var i = 0; i < adds.length; i++) {
+      var marker = new BMapGL.Marker(adds[i]);
+      map.addOverlay(marker);
+      marker.setLabel(new BMapGL.Label("我是商圈:" + (i + 1), { offset: new BMapGL.Size(10, -10) }));
+    }
+    function bdGEO() {
+      var pt = adds[index];
+      geocodeSearch(pt);
+      index++;
+    }
+    function geocodeSearch(pt) {
+      if (index < adds.length - 1) {
+        setTimeout(window.bdGEO, 400);
+      }
+      myGeo.getLocation(pt, function (rs) {
+        var addComp = rs.addressComponents;
+        document.getElementById("result").innerHTML += index + ". " + adds[index - 1].lng + "," + adds[index - 1].lat + "：" + "商圈(" + rs.business + ")  结构化数据(" + addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber + ")<br/><br/>";
+      });
+    }
+  </script>
+</body>
+
+</html>

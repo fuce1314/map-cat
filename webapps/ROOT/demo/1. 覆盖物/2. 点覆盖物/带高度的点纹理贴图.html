@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>带高度的点纹理贴图</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script type="text/javascript" src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+
+</html>
+<script>
+  var map = new BMapGL.Map('container');
+  var point = new BMapGL.Point(106.461016,29.54669);
+  map.centerAndZoom(point, 10);
+  map.enableScrollWheelZoom();
+  map.setTilt(70);
+
+
+  var citys = [{
+    name: '重庆大学',
+    img: '/jsdemo/img/beida.png'
+  }, {
+    name: '重庆大学',
+    img: '/jsdemo/img/qinghua.png'
+  }, {
+    name: '重庆财经大学',
+    img: '/jsdemo/img/zhongcai.png'
+  }, {
+    name: '重庆交通大学',
+    img: '/jsdemo/img/beijiao.png'
+  }, {
+    name: '重庆工业大学',
+    img: '/jsdemo/img/beigong.png'
+  }, {
+    name: '重庆邮电大学',
+    img: '/jsdemo/img/beiyou.png'
+  }, {
+    name: '重庆理工大学',
+    img: '/jsdemo/img/beili.png'
+  }, {
+    name: '重庆航空航天大学',
+    img: '/jsdemo/img/beihang.png'
+  }, {
+    name: '重庆传媒大学',
+    img: '/jsdemo/img/zhongchuan.png'
+  }];
+
+  var cityGeo = new BMapGL.Geocoder();
+  for (let i = 0; i < citys.length; i++) {
+    cityGeo.getPoint(citys[i].name, function (point) { // 地址解析获取对应经纬度
+	alert("xx");
+      var pt = new BMapGL.Point(point.lng, point.lat);
+      var icon = new BMapGL.Icon(citys[i].img, new BMapGL.Size(40, 40));
+      var marker = new BMapGL.Marker3D(pt, Math.round(Math.random()) * 6000, {
+        size: 80,
+        icon: icon
+      });
+      map.addOverlay(marker);
+    });
+  }
+</script>

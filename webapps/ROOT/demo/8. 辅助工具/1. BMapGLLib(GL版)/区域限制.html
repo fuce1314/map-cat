@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <script type="text/javascript" src="http://localhost:81/mapcat/api.js"></script>
+  <script type="text/javascript"
+    src="//mapopen.cdn.bcebos.com/github/BMapGLLib/AreaRestriction/src/AreaRestriction.min.js"></script>
+  <title>区域限制</title>
+  <style type="text/css">
+    body,
+    html,
+    #container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    ul li {
+      list-style: none;
+    }
+
+    .info {
+      z-index: 999;
+      width: auto;
+      min-width: 22rem;
+      padding: .75rem 1.25rem;
+      margin-left: 1.25rem;
+      position: fixed;
+      top: 1rem;
+      background-color: #fff;
+      border-radius: .25rem;
+      font-size: 14px;
+      color: #666;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="info">通过输入限定浏览的地图区域的Bounds值，则地图浏览者只能在限定区域内浏览地图。</div>
+  <div id="container"></div>
+</body>
+
+</html>
+<script type="text/javascript">
+  var map = new BMapGL.Map("container");
+  map.centerAndZoom(new BMapGL.Point(106.447151,29.547786), 13);
+  map.enableScrollWheelZoom();
+
+  var bound = new BMapGL.Bounds(new BMapGL.Point(116.027143, 39.772348), new BMapGL.Point(116.832025, 40.126349));
+  map.addOverlay(new BMapGL.Polygon([
+    new BMapGL.Point(bound.sw.lng, bound.sw.lat),
+    new BMapGL.Point(bound.sw.lng, bound.ne.lat),
+    new BMapGL.Point(bound.ne.lng, bound.ne.lat),
+    new BMapGL.Point(bound.ne.lng, bound.sw.lat)
+  ]))
+
+  try {
+    BMapGLLib.AreaRestriction.setBounds(map, bound);
+  } catch (e) {
+    alert(e);
+  }
+
+
+</script>

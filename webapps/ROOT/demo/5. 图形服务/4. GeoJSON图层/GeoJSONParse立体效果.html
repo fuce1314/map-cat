@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>mvt layer</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <style type="text/css">
+    body,
+    html,
+    .map-container {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    .tools {
+      /* width: 100%; */
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-content: center;
+      justify-content: left;
+      z-index: 999;
+      position: fixed;
+      bottom: 1rem;
+      margin: 2rem;
+      padding: 0.5rem 0.5rem 1rem 0.5rem;
+      border-radius: .25rem;
+      background-color: #fff;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+
+    .tools input {
+      width: 30px;
+      height: 20px;
+    }
+
+    .tools span,
+    input {
+      display: block;
+      height: max-content;
+      margin: 5px;
+      padding: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      background-color: #fff;
+      color: rgba(27, 142, 236, 1);
+      border: 1px solid rgba(27, 142, 236, 1);
+      border-radius: 5px;
+      text-align: center;
+      margin-bottom: 0px;
+      /* line-height: 30px; */
+    }
+
+    .tools span:hover {
+      background-color: rgba(27, 142, 236, 0.8);
+      color: #fff;
+    }
+
+    #allmap {
+      /*display: none;*/
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+  <script>
+    window.BMAP_AUTHENTIC_KEY = '您的密钥';
+
+  </script>
+  <!-- <script type="text/javascript" src="../release/api_uc.js"></script> -->
+  <script type="text/javascript"
+    src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=E4805d16520de693a3fe707cdc962045"></script>
+  <script type="text/javascript" src="https://mapopen-pub-jsapi.bj.bcebos.com/jsapiGlgeo/geoJson.js"></script>
+</head>
+
+<body>
+  <div class="tools">
+    <span onclick="addOverlays()">添加覆盖物</span>
+    <span onclick="moveIndex(-2)">背景图层移下一层</span>
+    <span onclick="moveIndex(2)">背景图层移上一层</span>
+    <span onclick="removeOverlays()">移除覆盖物</span>
+    <span onclick="add3dOverlays()">添加3D覆盖物</span>
+    <span onclick="remove3dOverlays()">移除3D覆盖物</span>
+  </div>
+  <div class="map-container">
+    <div id="allmap" class="map"></div>
+  </div>
+</body>
+
+</html>
+<script type="text/javascript">
+  // 百度地图API功能
+  var map = new BMapGL.Map("allmap");
+  map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+  map.enableContinuousZoom();
+  map.setMapType(BMAP_SATELLITE_MAP);
+
+
+  var point = new BMapGL.Point(116.405, 39.920);
+  map.centerAndZoom(point, 15);
+
+  var polyline = new BMapGL.Polyline([
+    new BMapGL.Point(116.309, 39.910),
+    new BMapGL.Point(116.405, 40.020),
+    new BMapGL.Point(116.433493, 39.907445)
+  ], {
+    strokeColor: 'blue',
+    strokeWeight: 3,
+    strokeOpacity: 1
+  });
+  map.addOverlay(polyline);
+
+  var polygon = new BMapGL.Polygon([
+    new BMapGL.Point(116.387112, 39.920977),
+    new BMapGL.Point(116.385243, 39.913063),
+    new BMapGL.Point(116.394226, 39.917988),
+    new BMapGL.Point(116.401772, 39.921364),
+    new BMapGL.Point(116.41248, 39.927893),
+    new BMapGL.Point(116.387112, 39.920977),
+
+  ], {
+    fillColor: 'blue',
+    strokeWeight: 0
+  });
+  map.addOverlay(polygon);
+
+  var marker1 = new BMapGL.Marker(new BMapGL.Point(116.404, 39.925));
+
+  map.addOverlay(marker1);
+
+  var label = new BMapGL.Label();
+  label.setStyle({
+    color: 'blue',
+    borderRadius: '5px',
+    borderColor: '#ccc',
+    padding: '10px',
+    fontSize: '16px',
+    fontFamily: '微软雅黑',
+    transform: 'translateX(-50%) translateY(calc(-100% - 10px))'
+  });
+
+  function popup(e) {
+    if (e.target) {
+      label.setPosition(e.latLng);
+      label.setContent(`<h4 style='margin:0 0 5px 0;'>${e.target.properties.name}</h4>
+    <p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>
+    adcode：${e.target.properties.adcode}
+    </p></div>`);
+      map.addOverlay(label);
+    }
+  }
+
+  var fs3d = []; // 存储北京市各区的区域数据
+  var fs = []; // 存储北京市各区的区域数据
+  var bj = []; // 存储北京市区域数据
+
+  var colorBand = ['darkolivegreen', 'cadetblue', 'orange', 'red', 'tan'];
+
+  var gParse = new BMapGL.GeoJSONParse({
+    reference: 'GCJ02'
+  });
+
+  function addOverlays() {
+    if (fs.length > 0) {
+      return;
+    }
+    fs = gParse.readFeaturesFromObject(region1, {
+      fillColor: 'red'
+    }, function (overlay) {
+      var index = overlay.properties.join || 0;
+      overlay.setFillColor(colorBand[index]);
+      overlay.setZIndex(-2);
+      overlay.addEventListener('onclick', popup);
+      map.addOverlay(overlay);
+    });
+    bj = gParse.readFeaturesFromObject(beijing1, {
+      strokeColor: 'darkred',
+      strokeWeight: 4,
+      fillOpacity: 0.6
+    }, function (overlay) {
+      overlay.setZIndex(-1);
+      map.addOverlay(overlay);
+    });
+  }
+
+  function moveIndex(index) {
+    for (var i = 0; i < bj.length; i++) {
+      bj[i].setZIndex(bj[i].zIndex + index);
+    }
+    map.fire(new BMapGL.Event('onupdate', 'line'));
+  }
+
+  function removeOverlays() {
+    for (var i = 0; i < fs.length; i++) {
+      map.removeOverlay(fs[i]);
+    }
+    for (var i = 0; i < bj.length; i++) {
+      map.removeOverlay(bj[i]);
+    }
+    map.removeOverlay(label);
+    fs = [];
+    bj = [];
+  }
+
+  function add3dOverlays() {
+    if (fs3d.length > 0) {
+      return;
+    }
+    gParse.readFeaturesFromObject(region1, {
+      isPoints: true
+    }, function (overlay) {
+      var index = overlay.properties.join || 0;
+      var prism = new BMapGL.Prism(overlay.points, 3000, {
+        topFillColor: colorBand[index],
+        topFillOpacity: 0.9,
+        sideFillColor: colorBand[index],
+        sideFillOpacity: 0.9
+
+      });
+      prism.properties = overlay.properties;
+      prism.setZIndex(-1)
+      prism.addEventListener('onclick', popup);
+      map.addOverlay(prism);
+      fs3d.push(prism);
+    });
+  }
+
+  function remove3dOverlays() {
+    for (var i = 0; i < fs3d.length; i++) {
+      map.removeOverlay(fs3d[i]);
+    }
+    map.removeOverlay(label);
+    fs3d = [];
+  }
+
+</script>

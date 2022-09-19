@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>添加图文组合信息窗口</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+
+</html>
+<script>
+  var map = new BMapGL.Map('container');
+  map.centerAndZoom(new BMapGL.Point(106.447151,29.547786), 15);
+  map.enableScrollWheelZoom(true);
+  // 创建添加点标记
+  var marker = new BMapGL.Marker(new BMapGL.Point(106.447151,29.547786));
+  map.addOverlay(marker);
+  // 创建图文信息窗口
+  var sContent = `<h4 style='margin:0 0 5px 0;'>天安门</h4>
+    <img style='float:right;margin:0 4px 22px' id='imgDemo' src='../img/tianAnMen.jpg' width='139' height='104'/>
+    <p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>
+    天安门坐落在中国北京市中心,故宫的南侧,与天安门广场隔长安街相望,是清朝皇城的大门...
+    </p></div>`;
+  var infoWindow = new BMapGL.InfoWindow(sContent);
+  // marker添加点击事件
+  marker.addEventListener('click', function () {
+    this.openInfoWindow(infoWindow);
+    // 图片加载完毕重绘infoWindow
+    document.getElementById('imgDemo').onload = function () {
+      infoWindow.redraw(); // 防止在网速较慢时生成的信息框高度比图片总高度小，导致图片部分被隐藏
+    };
+  });
+</script>

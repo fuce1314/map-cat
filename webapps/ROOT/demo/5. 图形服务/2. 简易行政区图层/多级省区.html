@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="http://localhost:81/mapcat/api.js"></script>
+  <script type="text/javascript" src="//bj.bcebos.com/v1/mapopen/api-demos/data/province.js"></script>
+  <title>多级省区</title>
+  <style>
+    html,
+    body,
+    #container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      padding: 0
+    }
+
+    .info {
+      z-index: 999;
+      width: auto;
+      padding: 10px;
+      margin-left: 10px;
+      position: fixed;
+      top: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #666;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+
+    .selbox {
+      margin: 8px 0;
+    }
+
+    select {
+      width: 180px;
+      height: 30px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container"></div>
+  <div class="info">
+    <div class="selbox">
+      <span>选择省份</span>
+      <select name="sel-list" id="prolist" onchange="changeProvince(this)">
+        <option value="-1">选择省份</option>
+      </select>
+    </div>
+    <div class="selbox">
+      <span>选择层级</span>
+      <select name="sel-list" onchange="changeDepth(this)">
+        <option value="0">省级行政区-0</option>
+        <option selected value="1">市级行政区-1</option>
+        <option value="2">区/县级行政区-2</option>
+      </select>
+    </div>
+  </div>
+  <script>
+    var map = new BMapGL.Map('container');
+    map.centerAndZoom(new BMapGL.Point(106.447151,29.547786), 7);
+    map.enableScrollWheelZoom();
+    var zoomCtrl = new BMapGL.ZoomControl();
+    map.addControl(zoomCtrl);
+
+    var proname = '山东省';
+    var prokind = 1;
+    var dist = null;
+
+    // --- 添加行政区 ---
+    function addDis(proname, prokind) {
+      map.removeDistrictLayer(dist);
+      dist = new BMapGL.DistrictLayer({
+        name: '(' + proname + ')',
+        kind: prokind,
+        fillColor: '#618bf8',
+        strokeColor: '#daeafa',
+        viewport: true
+      });
+      map.addDistrictLayer(dist);
+    }
+    addDis(proname, prokind);
+
+    // --- 切换行政区与层级 ---
+    function changeProvince(ele) {
+      proname = ele.value;
+      addDis(ele.value, prokind);
+    }
+
+    function changeDepth(ele) {
+      prokind = ele.value;
+      addDis(proname, ele.value);
+    }
+
+  </script>
+  <script>
+    var optarr = provinces.map(function (item) {
+      return '<option ' + (item.name === proname ? 'selected' : '') + ' value="' + item.name + '">' + item.name + '</option>';
+    });
+    document.getElementById('prolist').innerHTML = optarr.join('');
+  </script>
+</body>
+
+</html>

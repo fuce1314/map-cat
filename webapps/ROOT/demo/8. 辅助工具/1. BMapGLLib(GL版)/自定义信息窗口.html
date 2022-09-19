@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <style type="text/css">
+    body,
+    html {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    ol li,
+    ul li {
+      list-style: none;
+    }
+
+    #map_canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .infoBoxContent {
+      font-size: 12px;
+    }
+
+    .infoBoxContent .title {
+      height: 42px;
+      width: 272px;
+    }
+
+    .infoBoxContent .title strong {
+      font-size: 14px;
+      line-height: 42px;
+      padding: 0 10px 0 5px;
+    }
+
+    .infoBoxContent .title .price {
+      color: #FFFF00;
+    }
+
+    .infoBoxContent .list {
+      width: 268px;
+      border: solid 1px #4FA5FC;
+      border-top: none;
+      background: #fff;
+      height: 260px;
+    }
+
+    .infoBoxContent .list ul {
+      margin: 0;
+      padding: 5px;
+    }
+
+    .infoBoxContent .list ul li {
+      float: left;
+      width: 255px;
+      border-bottom: solid 1px #4FA5FC;
+      padding: 2px 0;
+    }
+
+    .infoBoxContent .list ul .last {
+      border: none;
+    }
+
+    .infoBoxContent .list ul img {
+      width: 53px;
+      height: 42px;
+      margin-right: 5px;
+    }
+
+    .infoBoxContent .list ul p {
+      padding: 0;
+      margin: 0;
+    }
+
+    .infoBoxContent .left {
+      float: left;
+    }
+
+    .infoBoxContent .rmb {
+      float: right;
+      color: #EB6100;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .infoBoxContent a {
+      color: #0041D9;
+      text-decoration: none;
+    }
+
+    #btns {
+      z-index: 999;
+      position: fixed;
+      bottom: 3.5rem;
+      margin-left: 2.5rem;
+      padding-left: 0;
+      border-radius: .25rem;
+      display: flex;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+      text-align: center;
+    }
+
+    #btns li {
+      border-right: 1px solid #d2d2d2;
+      padding: 10px 10px;
+      height: 100%;
+      background-color: #fff;
+      cursor: pointer;
+      color: #3a79b5;
+    }
+  </style>
+  <script src="//api.map.baidu.com/api?v=1.0&type=webgl&ak=您的密钥"></script>
+  <link href="//mapopen.bj.bcebos.com/github/BMapGLLib/InfoBox/src/InfoBox.js" rel="stylesheet">
+  <script src="//mapopen.bj.bcebos.com/github/BMapGLLib/InfoBox/src/InfoBox.js"></script>
+
+
+  <title>自定义信息窗口</title>
+</head>
+
+<body>
+  <div id="map_canvas"></div>
+  <ol id="btns">
+    <li id="close">关闭</li>
+    <li id="open">打开</li>
+    <li id="show">展示</li>
+    <li id="hide">隐藏</li>
+    <li id="enableAutoPan">启动自动平移</li>
+    <li id="disableAutoPan">禁用自动平移</li>
+  </ol>
+  <script type="text/javascript">
+    var map = new BMapGL.Map('map_canvas');
+    var poi = new BMapGL.Point(116.307852, 40.057031);
+    map.centerAndZoom(poi, 19);
+    var html = [
+      "<div class='infoBoxContent'><div class='title'><strong>中海雅园</strong><span class='price'>均价43000</span></div>",
+      "<div class='list'><ul><li><div class='left'><img src='../img/wucaicheng.jpg'/></div><div class='left'><a target='_blank' href='//map.baidu.com'>中海雅园南北通透四居室</a><p>4室2厅，205.00平米，3层</p></div><div class='rmb'>760万</div></li>",
+      "<li><div class='left'><img src='../img/wucaicheng.jpg'/></div><div class='left'><a target='_blank' href='//map.baidu.com'>中海雅园四居室还带保姆间</a><p>2室1厅，112.00平米，16层</p></div><div class='rmb'>300万</div></li>",
+      "<li><div class='left'><img src='../img/wucaicheng.jpg'/></div><div class='left'><a target='_blank' href='//map.baidu.com'>《有钥匙 随时看》花园水系</a><p>3室2厅，241.00平米，16层</p></div><div class='rmb'>400万</div></li>",
+      "<li><div class='left'><img src='../img/wucaicheng.jpg'/></div><div class='left'><a target='_blank' href='//map.baidu.com'>富力城D区正规楼王大三居</a><p>3室3厅，241.00平米，17层</p></div><div class='rmb'>600万</div></li>",
+      "<li class='last'><div class='left'><img src='../img/wucaicheng.jpg'/></div><div class='left'><a target='_blank' href='//map.baidu.com'>富力城豪，身份人士的象征</a><p>4室2厅，213.90平米，25层</p></div><div class='rmb'>700万</div></li>",
+      "</ul></div>", "</div>"
+    ];
+    var infoBox = new BMapGLLib.InfoBox(map, html.join(""), {
+      boxStyle: {
+        background: "#6cb2fa",
+        width: "270px",
+        height: "300px"
+      },
+      closeIconMargin: "1px 1px 0 0",
+      closeIconUrl: '//mapopen.bj.bcebos.com/github/BMapGLLib/InfoBox/examples/images/close.png',
+      enableAutoPan: true,
+      align: INFOBOX_AT_BOTTOM,
+      offset: new BMapGL.Size(15, -150)
+    });
+    var marker = new BMapGL.Marker(poi);
+    // map.addOverlay(marker);
+    infoBox.open(marker);
+    marker.enableDragging();
+    $("close").onclick = function () {
+      infoBox.close();
+    }
+    $("open").onclick = function () {
+      infoBox.open(marker);
+    }
+    $("show").onclick = function () {
+      infoBox.show();
+    }
+    $("hide").onclick = function () {
+      infoBox.hide();
+    }
+    $("enableAutoPan").onclick = function () {
+      infoBox.enableAutoPan();
+    }
+    $("disableAutoPan").onclick = function () {
+      infoBox.disableAutoPan();
+    }
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+  </script>
+</body>
+
+</html>

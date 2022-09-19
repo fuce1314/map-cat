@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>个性化地图</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    .info {
+      z-index: 999;
+      width: auto;
+      min-width: 22rem;
+      padding: .75rem 1.25rem;
+      margin-left: 1.25rem;
+      position: fixed;
+      top: 1rem;
+      background-color: #fff;
+      border-radius: .25rem;
+      font-size: 14px;
+      color: #666;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+
+    ul li {
+      list-style: none;
+    }
+
+    .drawing-panel {
+      z-index: 999;
+      position: fixed;
+      bottom: 3.5rem;
+      margin-left: 3rem;
+      padding: 1rem 1rem;
+      border-radius: .25rem;
+      background-color: #fff;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+
+    .btn {
+      width: 75px;
+      height: 30px;
+      float: left;
+      background-color: #fff;
+      color: rgba(27, 142, 236, 1);
+      font-size: 14px;
+      border: 1px solid rgba(27, 142, 236, 1);
+      border-radius: 5px;
+      margin: 0 5px;
+      text-align: center;
+      line-height: 30px;
+    }
+
+    .btn.current {
+      background-color: rgba(27, 142, 236, 1);
+      color: #fff;
+    }
+
+    .btn:hover {
+      background-color: rgba(27, 142, 236, 0.8);
+      color: #fff;
+    }
+  </style>
+  <script src="//bj.bcebos.com/v1/mapopen/api-demos/js/mapStyle.js"></script>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+
+</head>
+
+<body>
+  <div class="info">
+    <p>个性化底图v2样式可以通过 <a href='/customv2/help.html' target="_blank">个性化在线编辑器</a> 自由编辑获取~</p>
+  </div>
+  <div id="container"></div>
+  <ul class="drawing-panel" style="z-index: 99;">
+    <li class="light btn current" onclick="setCustomStyle(this)">白天模式</li>
+    <li class="night btn" onclick="setCustomStyle(this)">夜晚模式</li>
+  </ul>
+</body>
+
+</html>
+<script>
+  var map = new BMapGL.Map('container');
+  map.centerAndZoom(new BMapGL.Point(106.447151,29.547786), 11);
+  map.enableScrollWheelZoom(true);
+  map.setMapStyleV2({ styleJson: styleJson1 });
+  // 隐藏室内图
+  map.setDisplayOptions({
+    indoor: false
+  });
+  function setCustomStyle(e) {
+    if (e.className.indexOf('current') === -1) {
+      var allLi = document.getElementsByClassName('btn');
+      for (var i = 0; i < allLi.length; i++) {
+        allLi[i].className = allLi[i].className.replace(' current', '').trim();
+      }
+      e.className += ' current';
+      if (e.className.indexOf('light') !== -1) {
+        map.setMapStyleV2({ styleJson: styleJson1 });
+      } else {
+        map.setMapStyleV2({ styleJson: styleJson2 });
+      }
+    }
+  }
+</script>

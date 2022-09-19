@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="http://localhost:81/mapcat/api.js"></script>
+  <title>行政大区</title>
+  <style>
+    html,
+    body,
+    #container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      padding: 0
+    }
+
+    .info {
+      z-index: 999;
+      width: auto;
+      padding: 10px;
+      margin-left: 10px;
+      position: fixed;
+      top: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #666;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+
+    ul li {
+      list-style: none;
+    }
+
+    .btn-wrap {
+      z-index: 999;
+      position: fixed;
+      bottom: 30px;
+      left: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #fff;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+
+    .btn {
+      width: 100px;
+      height: 30px;
+      float: left;
+      background-color: rgba(265, 265, 265, 0.9);
+      color: rgba(27, 142, 236, 1);
+      font-size: 14px;
+      border: 1px solid rgba(27, 142, 236, 1);
+      border-radius: 5px;
+      margin: 0 5px;
+      text-align: center;
+      line-height: 30px;
+    }
+
+    .btn:hover {
+      background-color: rgba(27, 142, 236, 0.8);
+      color: #fff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="info">
+    DistrictLayer简易行政聚合图层支持将多个行政区合并显示为一个大区。</br>
+    如图所示的「京津冀大区」。
+  </div>
+  <div id="container"></div>
+  <ul class="btn-wrap" style="z-index: 99;">
+    <li class="btn" onclick="addDis()">显示京津冀大区</li>
+    <li class="btn" onclick="removeDis()">移除京津冀大区</li>
+  </ul>
+  <script>
+    var map = new BMapGL.Map('container');
+    map.centerAndZoom(new BMapGL.Point(108.346242, 35.843776), 6);
+    map.enableScrollWheelZoom();
+    map.setDisplayOptions({
+      poi: false
+    });
+    var zoomCtrl = new BMapGL.ZoomControl();
+    map.addControl(zoomCtrl);
+
+    // --- 添加行政大区 ---
+    // var dist = new BMapGL.DistrictLayer({
+    //     name: '(北京,天津,河北省)',
+    //     fillColor: '#5e8bff',
+    //     fillOpacity: 1
+    // });
+    // map.addDistrictLayer(dist);
+    // var label = new BMapGL.Label('京津冀大区', {
+    //     position: new BMapGL.Point(116.4503, 39.9213),
+    //     offset: new BMapGL.Size(-28, -20)
+    // });
+    // label.setStyle({
+    //     color: '#fff',
+    //     borderColor: '#5e8bff',
+    //     backgroundColor: '#5e8bff',
+    //     fontSize: '14px'
+    // });
+    // map.addOverlay(label);
+    var dist = null;
+    var label = null;
+    function addDis() {
+      map.removeDistrictLayer(dist);
+      dist = new BMapGL.DistrictLayer({
+        name: '(北京,天津,河北省)',
+        fillColor: '#5e8bff',
+        fillOpacity: 1
+      });
+      map.addDistrictLayer(dist);
+      label = new BMapGL.Label('京津冀大区', {
+        position: new BMapGL.Point(116.4503, 39.9213),
+        offset: new BMapGL.Size(-28, -20)
+      });
+      label.setStyle({
+        color: '#fff',
+        borderColor: '#5e8bff',
+        backgroundColor: '#5e8bff',
+        fontSize: '14px'
+      });
+      map.addOverlay(label);
+    }
+    addDis();
+
+    // --- 移除行政大区 ---
+    function removeDis() {
+      map.removeDistrictLayer(dist);
+      map.removeOverlay(label);
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>计算驾车时间与距离</title>
+  <script type="text/javascript" src="http://localhost:81/mapcat/api.js"></script>
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    #allmap {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='allmap'></div>
+  <script>
+    var map = new BMapGL.Map("allmap");
+    map.centerAndZoom(new BMapGL.Point(106.447151,29.547786), 12);
+    var output = "从西单到上地驾车需要";
+    var searchComplete = function (results) {
+      if (transit.getStatus() != BMAP_STATUS_SUCCESS) {
+        return;
+      }
+      var plan = results.getPlan(0);
+      output += plan.getDuration(true) + "\n";                //获取时间
+      output += "总路程为：";
+      output += plan.getDistance(true) + "\n";             //获取距离
+    }
+    var transit = new BMapGL.DrivingRoute(map, {
+      renderOptions: { map: map },
+      onSearchComplete: searchComplete,
+      onPolylinesSet: function () {
+        setTimeout(function () { alert(output) }, "1000");
+      }
+    });
+    var start = new BMapGL.Point(116.404844, 39.911836);
+    var end = new BMapGL.Point(116.308102, 40.056057);
+    transit.search(start, end);
+  </script>
+</body>
+
+</html>

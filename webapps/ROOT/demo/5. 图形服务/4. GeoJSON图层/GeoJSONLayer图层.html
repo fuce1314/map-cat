@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>mvt layer</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <style type="text/css">
+    body,
+    html,
+    #allmap {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+
+    .tools {
+      /* width: 100%; */
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-content: center;
+      justify-content: left;
+      z-index: 999;
+      position: fixed;
+      bottom: 1rem;
+      margin: 2rem;
+      padding: 0.5rem 0.5rem 1rem 0.5rem;
+      border-radius: .25rem;
+      background-color: #fff;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+
+    .tools input {
+      width: 30px;
+      height: 20px;
+    }
+
+    .tools span,
+    input {
+      display: block;
+      height: max-content;
+      margin: 5px;
+      padding: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      /* float: left; */
+      background-color: #fff;
+      color: rgba(27, 142, 236, 1);
+      border: 1px solid rgba(27, 142, 236, 1);
+      border-radius: 5px;
+      text-align: center;
+      /* line-height: 30px; */
+      margin-bottom: 0px;
+    }
+
+    .tools span:hover {
+      background-color: rgba(27, 142, 236, 0.8);
+      color: #fff;
+    }
+
+    .map-container {
+      /*display: none;*/
+      /* width: 1200px;
+            height: 600px; */
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      /* overflow: hidden; */
+    }
+
+    /* .map { */
+    /* position: relative;
+            left: 10px;
+            top: 10px; */
+    /* } */
+  </style>
+  <script>
+    window.BMAP_AUTHENTIC_KEY = '您的密钥';
+
+  </script>
+
+  <!--    <script type="text/javascript" src="../release/api_uc.js"></script>-->
+  <script type="text/javascript"
+    src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=E4805d16520de693a3fe707cdc962045"></script>
+  <script type="text/javascript" src="https://mapopen-pub-jsapi.bj.bcebos.com/jsapiGlgeo/geoJson.js"></script>
+
+</head>
+
+<body>
+  <div class="tools">
+    <span onclick="addGeoLayer1()">添加北京各区图层</span>
+    <span onclick="removeGeoLayer1()">移除北京各区图层</span>
+    <span onclick="addGeoLayer3()">添加poi图层</span>
+    <span onclick="removeGeoLayer3()">移除poi图层</span>
+    <span onclick="addGeoLayer2()" class="bt">添加北京边界图层</span>
+    <span onclick="removeGeoLayer2()" class="bt">移除北京边界图层</span>
+    <span onclick="moveIndex(-2)" class="bt">北京边界图层移下一层</span>
+    <span onclick="moveIndex(2)" class="bt">北京边界图层移上一层</span>
+  </div>
+  <div class="map-container">
+    <div id="allmap" class="map"></div>
+  </div>
+</body>
+
+</html>
+<script type="text/javascript">
+  // 百度地图API功能
+  var map = new BMapGL.Map("allmap");
+
+  var point = new BMapGL.Point(116.405, 39.920);
+  map.centerAndZoom(point, 15);
+  map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+  map.enableContinuousZoom();          // 开启双击平滑缩放效果
+  map.setMapType(BMAP_SATELLITE_MAP);
+
+  var polyline = new BMapGL.Polyline([
+    new BMapGL.Point(116.309, 39.910),
+    new BMapGL.Point(116.405, 40.020),
+    new BMapGL.Point(116.433493, 39.907445)
+  ], {
+    strokeColor: 'blue',
+    strokeWeight: 3,
+    strokeOpacity: 1
+  });
+  map.addOverlay(polyline);
+
+  var polygon = new BMapGL.Polygon([
+    new BMapGL.Point(116.387112, 39.920977),
+    new BMapGL.Point(116.385243, 39.913063),
+    new BMapGL.Point(116.394226, 39.917988),
+    new BMapGL.Point(116.401772, 39.921364),
+    new BMapGL.Point(116.41248, 39.927893),
+    new BMapGL.Point(116.387112, 39.920977),
+
+  ], {
+    fillColor: 'blue',
+    strokeWeight: 0
+  });
+  map.addOverlay(polygon);
+  var marker1 = new BMapGL.Marker(new BMapGL.Point(116.404, 39.925));
+  map.addOverlay(marker1);
+  var label = new BMapGL.Label();
+  label.setStyle({
+    color: 'blue',
+    borderRadius: '5px',
+    borderColor: '#ccc',
+    padding: '10px',
+    fontSize: '16px',
+    fontFamily: '微软雅黑',
+    transform: 'translateX(-50%) translateY(calc(-100% - 10px))'
+  });
+
+  function popup(e) {
+    if (e.features && e.features.length > 0) {
+      var overlay = e.features[0];
+
+      if (overlay.layerName === 'bj-poi') {
+        resetGeoLayer3();
+        if (overlay.toString() === 'Marker') {
+          overlay.setIcon(new BMapGL.Icon('https://maponline0.bdimg.com/sty/map_icons2x/MapRes/xq_chaoshi.png', new BMapGL.Size(23, 25)));
+        }
+
+        label.setPosition(e.latLng);
+        label.setContent(`<h4 style='margin:0 0 5px 0;'>${overlay.properties.name}</h4>
+    <p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>
+    adcode：${overlay.properties.adcode}
+    </p></div>`);
+        map.addOverlay(label);
+      }
+
+      if (overlay.layerName === 'bj-child') {
+        resetGeoLayer1();
+        if (overlay.toString() === 'Polygon') {
+          overlay.setFillColor('yellow');
+        }
+        if (overlay.toString() === 'Polyline') {
+          overlay.setStrokeColor('yellow');
+        }
+
+        label.setPosition(e.latLng);
+        label.setContent(`<h4 style='margin:0 0 5px 0;'>${overlay.properties.name}</h4>
+    <p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>
+    adcode：${overlay.properties.adcode}
+    </p></div>`);
+        map.addOverlay(label);
+      }
+    } else {
+      map.removeOverlay(label);
+    }
+
+  }
+
+  var colorBand = ['darkolivegreen', 'cadetblue', 'orange', 'red', 'tan'];
+  var urls = ['https://maponline0.bdimg.com/sty/map_icons2x/MapRes/jiayouzhan.png', 'https://maponline0.bdimg.com/sty/map_icons2x/MapRes/daxue.png'];
+  var bjRegionLayer;
+  var bjLayer;
+  var poiLayer;
+
+  function addGeoLayer1() {           // 添加北京各区图层
+    bjRegionLayer = new BMapGL.GeoJSONLayer('bj-child', {
+      reference: 'GCJ02',
+      dataSource: region,         // 北京各区数据
+      level: -10,                // 显示层级，由于系统内部问题，GeoJSONLayer图层等级使用负数表达，负数越大层级越高，默认-99
+      minZoom: 7,               // 设置图层显示的地图最小等级
+      maxZoom: 19,                // 设置图层显示的地图最大等级
+      polylineStyle: function (properties) {
+        return {
+          strokeColor: 'blue'
+        }
+      },
+      polygonStyle: function (properties) {
+        var index = properties.join || 0;
+        return {
+          fillColor: colorBand[index]
+        }
+      },
+      markerStyle: function (properties) {
+        return {
+
+        }
+      },
+    });
+    bjRegionLayer.addEventListener('click', function (e) {
+      if (e.features) {
+        popup(e);
+
+      } else {
+        resetGeoLayer1();
+        map.removeOverlay(label);
+
+      }
+      console.log('click', e, e.features);
+    });
+    bjRegionLayer.addEventListener('mousemove', function (e) {
+      console.log('mousemove', e, e.features);
+
+    });
+    bjRegionLayer.addEventListener('mouseout', function (e) {
+      console.log('mouseout', e, e.features);
+
+    });
+    map.addGeoJSONLayer(bjRegionLayer);
+  }
+
+  function addGeoLayer2() {            //添加北京边界图层
+    bjLayer = new BMapGL.GeoJSONLayer('bj-all', {
+      reference: 'GCJ02',
+      dataSource: beijing,
+      level: -9,
+      polygonStyle: {
+        strokeColor: 'darkred',
+        strokeWeight: 4,
+        fillOpacity: 0.6
+      },
+    });
+    map.addGeoJSONLayer(bjLayer);
+  }
+
+  function removeGeoLayer1() {
+    bjRegionLayer && map.removeGeoJSONLayer(bjRegionLayer);
+    map.removeOverlay(label);
+  }
+
+  function removeGeoLayer2() {
+    bjLayer && map.removeGeoJSONLayer(bjLayer);
+  }
+
+  function addGeoLayer3() {              // 添加poi图层
+    poiLayer = new BMapGL.GeoJSONLayer('bj-poi', {
+      reference: 'GCJ02',
+      dataSource: markers,
+      level: -10,
+      markerStyle: function (properties) {
+        var index = properties.join || 0;
+        return {
+          icon: new BMapGL.Icon(urls[index % 2], new BMapGL.Size(23, 25))
+        }
+      },
+    });
+
+    poiLayer.addEventListener('mousemove', function (e) {
+      if (e.features) {
+        popup(e);
+
+      } else {
+        resetGeoLayer3();
+        map.removeOverlay(label);
+
+      }
+      console.log('mousemove', e, e.features);
+
+    });
+
+    poiLayer.addEventListener('mouseout', function (e) {
+      if (e.features) {
+        popup(e);
+
+      } else {
+        resetGeoLayer3();
+        map.removeOverlay(label);
+
+      }
+      console.log('mouseout', e, e.features);
+
+    });
+    map.addGeoJSONLayer(poiLayer);
+
+  }
+
+  function removeGeoLayer3() {
+    poiLayer && map.removeGeoJSONLayer(poiLayer);
+  }
+
+  function moveIndex(index) {
+    bjLayer && bjLayer.setLevel(bjLayer.getLevel() + index);
+  }
+
+  function resetGeoLayer1() {
+    bjRegionLayer && bjRegionLayer.resetStyle();
+  }
+
+  function resetGeoLayer3() {
+    poiLayer && poiLayer.resetStyle();
+
+  }
+
+</script>

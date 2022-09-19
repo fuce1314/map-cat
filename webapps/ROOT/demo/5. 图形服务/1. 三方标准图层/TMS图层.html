@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <title>加载TMS地图展示</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script type="text/javascript" src="https:http://localhost:81/mapcat/api.js"></script>
+
+</head>
+
+<body>
+  <div id="container"></div>
+  <script>
+    var map = new BMapGL.Map('container'); // 创建Map实例
+    map.centerAndZoom(new BMapGL.Point(106.447151,29.547786), 8); // 初始化地图,设置中心点坐标和地图级别
+    map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+
+    // 定义XYZLayer图层
+    var tms = new BMapGL.XYZLayer({
+      tms: true,
+      useThumbData: true,
+      minZoom: 7,
+      maxZoom: 12,
+      tileUrlTemplate: 'https://mapopen-pub-jsapigl.bj.bcebos.com/tms-bj/[z]/[x]/[y].png',
+      extent: [12848196.067, 4784679.341, 13080063.094, 5021083.333] // "EPSG":3857 左下角坐标，右上角坐标
+    });
+    map.addTileLayer(tms);
+  </script>
+</body>
+
+</html>

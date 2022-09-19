@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>加载WMTS地图展示</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+
+</html>
+<script>
+  var map = new BMapGL.Map('container'); // 创建Map实例
+  map.centerAndZoom(new BMapGL.Point(-100.640, 40.79608), 4); // 初始化地图,设置中心点坐标和地图级别
+  map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+
+  // 定义XYZLayer图层
+  var wmts = new BMapGL.XYZLayer({
+    useThumbData: true,
+    tileUrlTemplate: 'https://mrdata.usgs.gov/mapcache/wmts?' +
+      'layer=sgmc2&style=default&tilematrixset=GoogleMapsCompatible&Service=WMTS&' +
+      'Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=[z]&TileCol=[x]&TileRow=[y]',
+    extentCRSIsWGS84: true,
+    extent: [-132.566, 28.269, -58.094, 50.790] // "EPSG":4326 左下角坐标，右上角坐标
+  });
+  map.addTileLayer(wmts);
+
+</script>

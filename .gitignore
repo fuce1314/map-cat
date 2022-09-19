@@ -1,0 +1,5 @@
+# .gitignore
+/tiles_v/
+*/tiles_v/*
+/logs/*
+/tiles_v/*

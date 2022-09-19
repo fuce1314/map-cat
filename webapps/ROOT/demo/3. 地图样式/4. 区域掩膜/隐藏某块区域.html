@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>掩模-隐藏某块区域</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    .info {
+      z-index: 999;
+      width: auto;
+      min-width: 22rem;
+      padding: .75rem 1.25rem;
+      margin-left: 1.25rem;
+      position: fixed;
+      top: 1rem;
+      background-color: #fff;
+      border-radius: .25rem;
+      font-size: 14px;
+      color: #666;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+  </style>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div class="info">区域掩模隐藏某块区域，适用于叠加自定义覆盖物或模型。另外，可以通过属性控制隐藏某块区域的元素，包括底图、楼块、poi标注等。</div>
+  <div id="container"></div>
+</body>
+
+</html>
+<script>
+  var map = new BMapGL.Map('container', {
+    backgroundColor: [192, 214, 213, 100]
+  });
+  var testPt = new BMapGL.Point(116.31698287216258, 40.036535695036726);
+  map.centerAndZoom(testPt, 18);
+  map.enableScrollWheelZoom();
+  map.setTilt(50);
+  // 定义掩模区域的坐标数组
+  var path = [
+    new BMapGL.Point(116.31951444701689, 40.03514188328609),
+    new BMapGL.Point(116.31914525270483, 40.03627653457813),
+    new BMapGL.Point(116.31887119442595, 40.03712933826661),
+    new BMapGL.Point(116.31862381043088, 40.037753816069426),
+    new BMapGL.Point(116.31846085080458, 40.03827800880047),
+    new BMapGL.Point(116.31800011574751, 40.03960034324275),
+    new BMapGL.Point(116.3176890313816, 40.0403207681881),
+    new BMapGL.Point(116.31747304954207, 40.04023658043798),
+    new BMapGL.Point(116.31689403073578, 40.040120567399384),
+    new BMapGL.Point(116.31419172285828, 40.03965310472413),
+    new BMapGL.Point(116.31437612880998, 40.03919415930771),
+    new BMapGL.Point(116.31462581129936, 40.03876546296739),
+    new BMapGL.Point(116.31525321239126, 40.037930670509574),
+    new BMapGL.Point(116.315488510584, 40.0377117230615),
+    new BMapGL.Point(116.31601289759325, 40.037228304952336),
+    new BMapGL.Point(116.31692309046987, 40.03662665953143),
+    new BMapGL.Point(116.31817328272946, 40.03584288930924),
+    new BMapGL.Point(116.31924096994166, 40.03521921152976),
+  ];
+  // 创建地图掩模类
+  var mapmask = new BMapGL.MapMask(path, {
+    isBuildingMask: true, // 对楼块进行隐藏
+    isPoiMask: true, // 对poi标注进行隐藏
+    isMapMask: true, // 对底图进行隐藏
+    showRegion: 'outside' // 掩模掉区域内，展示区域外地图
+  });
+  map.addOverlay(mapmask);
+  var marker = new BMapGL.Marker(new BMapGL.Point(116.31691023817756, 40.038009231456186));
+  map.addOverlay(marker);
+</script>

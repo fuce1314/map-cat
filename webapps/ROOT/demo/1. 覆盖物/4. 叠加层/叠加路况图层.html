@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>叠加删除路况图层</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    ul li {
+      list-style: none;
+    }
+
+    .btn-wrap {
+      z-index: 999;
+      position: fixed;
+      bottom: 3.5rem;
+      margin-left: 3rem;
+      padding: 1rem 1rem;
+      border-radius: .25rem;
+      background-color: #fff;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+
+    .btn {
+      width: 75px;
+      height: 30px;
+      float: left;
+      background-color: #fff;
+      color: rgba(27, 142, 236, 1);
+      font-size: 14px;
+      border: 1px solid rgba(27, 142, 236, 1);
+      border-radius: 5px;
+      margin: 0 5px;
+      text-align: center;
+      line-height: 30px;
+    }
+
+    .btn:hover {
+      background-color: rgba(27, 142, 236, 0.8);
+      color: #fff;
+    }
+  </style>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+  <ul class="btn-wrap" style="z-index: 99;">
+    <li class="btn" onclick="addRouteType()">叠加路况</li>
+    <li class="btn" onclick="removeRouteType()">删除路况</li>
+  </ul>
+</body>
+
+</html>
+<script>
+  var map = new BMapGL.Map('container');
+  map.centerAndZoom(new BMapGL.Point(116.403694, 39.927552), 12);
+  map.enableScrollWheelZoom(true);
+  function addRouteType() {
+    map.setTrafficOn(); // 叠加路况图层
+  }
+  function removeRouteType() {
+    map.setTrafficOff(); // 关闭路况图层
+  }
+</script>

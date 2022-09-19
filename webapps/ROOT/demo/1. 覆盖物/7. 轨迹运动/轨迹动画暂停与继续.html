@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>轨迹视角动画暂停与继续</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    ul li {
+      list-style: none;
+    }
+
+    .drawing-panel {
+      z-index: 999;
+      position: fixed;
+      bottom: 3.5rem;
+      margin-left: 3rem;
+      padding: 1rem 1rem;
+      border-radius: .25rem;
+      background-color: #fff;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+
+    .btn {
+      width: 90px;
+      height: 30px;
+      float: left;
+      background-color: #fff;
+      color: rgba(27, 142, 236, 1);
+      font-size: 14px;
+      border: 1px solid rgba(27, 142, 236, 1);
+      border-radius: 5px;
+      margin: 0 5px;
+      text-align: center;
+      line-height: 30px;
+    }
+
+    .btn:hover {
+      background-color: rgba(27, 142, 236, 0.8);
+      color: #fff;
+    }
+  </style>
+  <script src="//mapopen.bj.bcebos.com/github/BMapGLLib/TrackAnimation/src/TrackAnimation.min.js"></script>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+  <ul class="drawing-panel" style="z-index: 99;">
+    <li class="btn" onclick="pauseAni()">暂停</li>
+    <li class="btn" onclick="continueAni()">继续</li>
+  </ul>
+</body>
+
+</html>
+
+<script>
+  var bmap = new BMapGL.Map("container");
+  bmap.centerAndZoom(new BMapGL.Point(116.297611, 40.047363), 17);
+  bmap.enableScrollWheelZoom(true);
+  var path = [{
+    'lng': 116.297611,
+    'lat': 40.047363
+  }, {
+    'lng': 116.302839,
+    'lat': 40.048219
+  }, {
+    'lng': 116.308301,
+    'lat': 40.050566
+  }, {
+    'lng': 116.305732,
+    'lat': 40.054957
+  }, {
+    'lng': 116.304754,
+    'lat': 40.057953
+  }, {
+    'lng': 116.306487,
+    'lat': 40.058312
+  }, {
+    'lng': 116.307223,
+    'lat': 40.056379
+  }];
+  var point = [];
+  for (var i = 0; i < path.length; i++) {
+    point.push(new BMapGL.Point(path[i].lng, path[i].lat));
+  }
+  var pl = new BMapGL.Polyline(point);
+  setTimeout('start()', 3000);
+  trackAni = new BMapGLLib.TrackAnimation(bmap, pl, {
+    overallView: true,
+    tilt: 30,
+    duration: 20000,
+    delay: 300
+  });
+  function start() {
+    trackAni.start();
+  }
+  function pauseAni() {
+    trackAni.pause();
+  }
+  function continueAni() {
+    trackAni.continue();
+  }
+</script>

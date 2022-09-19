@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>MapVGL</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <style type="text/css">
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    #map_container {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+
+    #tools {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      z-index: 100;
+      right: 5px;
+      bottom: 5px;
+      color: #fff;
+    }
+
+    #tools button {
+      width: 100px;
+      height: 30px;
+    }
+  </style>
+  <script type="text/javascript" src="http://localhost:81/mapcat/api.js"></script>
+  <!--引入样式-->
+  <script type="text/javascript" src="https://mapv.baidu.com/gl/examples/static/common.js"></script>
+  <script type="text/javascript" src="https://mapopen-pub-jsapigl.bj.bcebos.com/newThree/three.min.js"></script>
+
+  <script type="text/javascript" src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.151/dist/mapvgl.min.js"></script>
+  <script type="text/javascript"
+    src="https://code.bdstatic.com/npm//mapvgl@1.0.0-beta.151/dist/mapvgl.threelayers.min.js"></script>
+
+</head>
+
+<body>
+
+  <div id="map_container"></div>
+  <div id="tools"><button onclick="targetToFly()" class="btn">捕获飞机位置</button></div>
+  <script>
+    /* global BMapGL */
+    var map = new BMapGL.Map('map_container', {
+      forceRenderType: 'webgl',
+      style: { styleJson: snowStyle }
+    });
+
+    // 百度mc坐标
+    var pois = [
+      {
+        x: 12957233.27,
+        y: 4827428.09,
+        z: 5000
+      },
+      {
+        x: 13058770.95,
+        y: 4708055.75,
+        z: 5000
+      },
+      {
+        x: 12536531.03,
+        y: 4538071.76,
+        z: 5000
+      }];
+
+    var point = new BMapGL.Point(pois[0].x, pois[0].y);
+    var center = BMapGL.Projection.convertMC2LL(point);
+
+    map.centerAndZoom(center, 12);
+    map.setHeading(90);
+    map.setTilt(80);
+
+    map.enableKeyboard();
+    map.enableScrollWheelZoom();
+    map.enableInertialDragging();
+    map.enableContinuousZoom();
+
+    for (var i = 0; i < pois.length; i++) {
+      var _point = new BMapGL.Point(pois[i].x, pois[i].y);
+      var marker = new BMapGL.Marker(BMapGL.Projection.convertMC2LL(_point));
+      map.addOverlay(marker);
+
+    }
+
+
+    var view = new mapvgl.View({
+      map: map
+    });
+
+    var threeLayer = new mapvgl.ThreeLayer({ notUpdateSize: false });
+    view.addLayer(threeLayer);
+
+    var lights = [];
+    lights[0] = new THREE.PointLight(0xffffff, 1, 0);
+    lights[0].position.set(0, -1000, 1000);
+    threeLayer.scene.add(lights[0]);
+
+    const geometry = new THREE.ConeGeometry(1000, 5000, 3);
+    const material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+    const cone = new THREE.Mesh(geometry, material);
+    cone.position.x = point.lng;
+    cone.position.y = point.lat;
+    cone.position.z = 2500;
+    cone.rotateX(90 / 180 * Math.PI);
+    threeLayer.add(cone);
+
+
+    var clock = new THREE.Clock();
+    var mixer;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (mixer) {
+        const delta = clock.getDelta(); // 获取⾃上次调⽤的时间差
+        mixer.update(delta);
+        threeLayer.update();
+
+      }
+    }
+    requestAnimationFrame(animate);
+
+    var flyGltf;
+    let gltfLoader = new mapvgl.THREELoader.GLTFLoader();
+    var geoGroup;
+    gltfLoader.load('https://mapopen-pub-jsapigl.bj.bcebos.com/newThree/airplane.glb', function (obj) {
+      // console.log(obj)// 这个obj就是解析后的模型，可添加到scene内。
+
+      flyGltf = obj.scene;
+      flyGltf.rotateX(90 / 180 * Math.PI);
+      flyGltf.scale.x = 50;
+      flyGltf.scale.y = 50;
+      flyGltf.scale.z = 50;
+
+      geoGroup = new THREE.Group();
+      // geoGroup.point = point;
+      geoGroup.add(flyGltf);
+      geoGroup.position.x = point.lng;
+      geoGroup.position.y = point.lat;
+      geoGroup.position.z = pois[0].z;
+      threeLayer.add(geoGroup);
+
+      mixer = new THREE.AnimationMixer(obj.scene)
+      const clip = obj.animations[0]
+      const clip2 = obj.animations[1]
+      const action = mixer.clipAction(clip)
+      const action2 = mixer.clipAction(clip2)
+      mixer.timeScale = 0.5 //默认1，可以调节播放速度
+      action.setDuration(2).play()
+      action2.setDuration(.2).play() // 可加速
+    });
+
+    function getDistanceByPixel(px1, px2) {
+      if (!px1 || !px2) {
+        return;
+      }
+      return Math.round(Math.sqrt(Math.pow(px1.x - px2.x, 2) + Math.pow(px1.y - px2.y, 2)));
+    }
+
+
+    function segLinePoints(pois) {
+      var segTotalLength = [0];
+      var segDegree = [0];
+      for (var i = 1, length = pois.length; i < length; i++) {
+        segTotalLength[i] = segTotalLength[i - 1] + getDistanceByPixel(pois[i], pois[i - 1]);
+        segDegree[i] = 0.5 * Math.PI + Math.atan2(pois[i].y - pois[i - 1].y, pois[i].x - pois[i - 1].x);
+
+      }
+      return function (distance) {
+        if (distance <= 0) {
+          return {
+            point: pois[0],
+            segDegree: segDegree[1],
+            index: 1
+          }
+        } else if (distance >= segTotalLength[segTotalLength.length - 1]) {
+          if (fly) {
+            clearInterval(fly);
+            fly = null;
+          }
+          return {
+            point: pois[segTotalLength.length - 1],
+            segDegree: segDegree[segTotalLength.length - 1],
+            index: segTotalLength.length - 1
+          }
+        } else {
+          var index = segTotalLength.findIndex(item => item > distance);
+
+          var startPoint = pois[index - 1],
+            endPoint = pois[index];
+
+          var offsetRatio = (distance - segTotalLength[index - 1]) / (segTotalLength[index] - segTotalLength[index - 1]);
+
+          var x = startPoint.x + (endPoint.x - startPoint.x) * offsetRatio;
+          var y = startPoint.y + (endPoint.y - startPoint.y) * offsetRatio;
+          var z = startPoint.z + (endPoint.z - startPoint.z) * offsetRatio;
+
+          return {
+            point: { x, y, z },
+            segDegree: segDegree[index],
+            index: index
+          };
+        }
+
+      }
+    }
+    var calPoint = new segLinePoints(pois);
+
+    var speed = 250 * 10; // 米每秒
+    var distance = 0;
+    var currentPoint = null;
+    var fly = setInterval(function () {
+      if (geoGroup) {
+        distance += speed * 0.01;
+        var result = calPoint(distance);
+        currentPoint = result;
+        geoGroup.position.x = result.point.x;
+        geoGroup.position.y = result.point.y;
+        geoGroup.position.z = result.point.z;
+        geoGroup.rotation.z = result.segDegree;
+
+        cone.position.x = result.point.x;
+        cone.position.y = result.point.y;
+
+      }
+    }, 1000 * 0.01)
+
+    var raycaster = new THREE.Raycaster();
+    var mouse = new THREE.Vector2();
+    map.addEventListener('click', function (e) {
+      var fs = [...threeLayer.world.children, ...flyGltf.children]
+
+      // 范围-1 1,原点在中心
+      mouse.x = (e.x / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.y / window.innerHeight) * 2 + 1;
+      console.log(mouse);
+
+      raycaster.setFromCamera(mouse, threeLayer.camera);
+      if (fs.length > 0) {
+        var intersects = raycaster.intersectObjects(fs);
+        console.log(intersects);
+      }
+
+    });
+    function targetToFly() {
+      if (currentPoint) {
+        var point = new BMapGL.Point(currentPoint.point.x, currentPoint.point.y);
+        map.flyToIn(point, 12);
+
+      }
+    }
+  </script>
+</body>
+
+</html>

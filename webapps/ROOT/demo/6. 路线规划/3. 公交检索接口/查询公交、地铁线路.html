@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="http://localhost:81/mapcat/api.js"></script>
+  <script src="https://code.bdstatic.com/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+  <title>公交/地铁线路查询</title>
+  <style>
+    body,
+    html {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    #container {
+      height: 100%;
+      width: 100%;
+    }
+
+    #r-result {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 99;
+      width: 250px;
+      height: 450px;
+      overflow-y: auto;
+      background: #fff;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+      border-radius: 7px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='container'></div>
+  <div id='r-result'></div>
+  <script>
+    var map = new BMapGL.Map("container");            // 创建Map实例
+    map.centerAndZoom(new BMapGL.Point(116.404, 39.915), 12);
+	map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+    var busline = new BMapGL.BusLineSearch(map, {
+      renderOptions: { map: map, panel: "r-result" },
+      onGetBusListComplete: function (result) {
+        if (result) {
+          var fstLine = result.getBusListItem(0);//获取第一个公交列表显示到map上
+          busline.getBusLine(fstLine);
+        }
+      }
+    });
+    function busSearch() {
+      var busName = 107;
+      busline.getBusList(busName);
+    }
+    setTimeout(function () {
+      busSearch();
+    }, 1500);
+  </script>
+</body>
+
+</html>

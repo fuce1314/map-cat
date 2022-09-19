@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>路书</title>
+  <style type="text/css">
+    body,
+    html {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    ul li {
+      list-style: none;
+    }
+
+    #map_canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    #result {
+      width: 100%
+    }
+
+    #btns {
+      z-index: 999;
+      position: fixed;
+      bottom: 3.5rem;
+      margin-left: 2.5rem;
+      padding-left: 0;
+      border-radius: .25rem;
+      display: flex;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+      text-align: center;
+    }
+
+    #btns li {
+      border-right: 1px solid #d2d2d2;
+      padding: 10px 10px;
+      height: 100%;
+      background-color: #fff;
+      cursor: pointer;
+      color: #3a79b5;
+    }
+  </style>
+  <script>
+    window.BMAP_AUTHENTIC_KEY = '7Cc5Kmn672miPzG4qQhvlOrERcXMMinq';
+  </script>
+  <script type="text/javascript" src="http://localhost:81/mapcat/api.js"></script>
+  <script type="text/javascript" src="//bj.bcebos.com/v1/mapopen/github/BMapGLLib/Lushu/src/Lushu.min.js"></script>
+</head>
+
+<body>
+  <div id="map_canvas"></div>
+  <div id="result"></div>
+  <ul id='btns'>
+    <li id="run">开始</li>
+    <li id="stop">停止</li>
+    <li id="pause">暂停</li>
+    <li id="hide">隐藏信息窗口</li>
+    <li id="show">展示信息窗口</li>
+  </ul>
+
+  <script>
+    var map = new BMapGL.Map('map_canvas');
+    map.enableScrollWheelZoom();
+    map.centerAndZoom(new BMapGL.Point(106.447151,29.547786), 13);
+
+    var lushu;
+    // 实例化一个驾车导航用来生成路线
+    var drv = new BMapGL.DrivingRoute('北京', {
+      onSearchComplete: function (res) {
+        if (drv.getStatus() == BMAP_STATUS_SUCCESS) {
+          var plan = res.getPlan(0);
+          var arrPois = [];
+          for (var j = 0; j < plan.getNumRoutes(); j++) {
+            var route = plan.getRoute(j);
+            arrPois = arrPois.concat(route.getPath());
+          }
+          map.addOverlay(new BMapGL.Polyline(arrPois, { strokeColor: '#111' }));
+          map.setViewport(arrPois);
+          //飞机图片
+          var fly = 'data:image/png;base64,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';
+
+          lushu = new BMapGLLib.LuShu(map, arrPois, {
+            defaultContent: '起飞啦', // "信息窗口文案"
+            autoView: true, // 是否开启自动视野调整，如果开启那么路书在运动过程中会根据视野自动调整
+            speed: 500,
+            // icon: new BMapGL.Icon('./images/car.png', new BMapGL.Size(32, 32), { anchor: new BMapGL.Size(10, 10) }),
+            icon: new BMapGL.Icon(fly, new BMapGL.Size(48, 48), { anchor: new BMapGL.Size(24, 24) }),
+            enableRotation: true, // 是否设置marker随着道路的走向进行旋转
+          });
+        }
+      }
+    });
+    var start = new BMapGL.Point(116.404844, 40);
+    var end = new BMapGL.Point(116.308102, 40.056057);
+    drv.search(start, end);
+
+    //绑定事件
+    $("run").onclick = function () {
+      //开始
+      lushu.start();
+    }
+    $("stop").onclick = function () {
+      //停止
+      lushu.stop();
+    }
+    $("pause").onclick = function () {
+      //暂停
+      lushu.pause();
+    }
+    $("hide").onclick = function () {
+      //隐藏信息窗口
+      lushu.hideInfoWindow();
+    }
+    $("show").onclick = function () {
+      //展示信息窗口
+      lushu.showInfoWindow();
+    }
+    function $(element) {
+      return document.getElementById(element);
+    }
+  </script>
+</body>
+
+</html>

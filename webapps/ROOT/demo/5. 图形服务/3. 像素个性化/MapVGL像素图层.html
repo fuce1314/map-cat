@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <style type="text/css">
+    body,
+    html,
+    #map_container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    .caption {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      font-size: 14px;
+      transform: translateX(-50%);
+      color: #e91e63;
+      z-index: 2;
+    }
+
+    #tooltip {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 3px 6px;
+      font-size: 12px;
+      color: #fff;
+      border-radius: 5px;
+      background-color: rgb(0 150 136);
+      z-index: 999;
+    }
+
+    .legend {
+      position: absolute;
+      right: 60px;
+      bottom: 36px;
+      height: 200px;
+      display: flex;
+      flex-direction: row;
+      z-index: 2;
+    }
+
+    .legend-img {
+      width: 12px;
+      height: 100%;
+    }
+
+    .legend-img img {
+      width: 200px;
+      height: 12px;
+      transform-origin: center;
+      transform: translate(calc(-100px + 6px), calc(-12px + 100px)) rotateZ(270deg);
+    }
+
+    .legend-label {
+      position: relative;
+
+    }
+
+    .legend-value-row {
+      position: absolute;
+      color: #828181;
+      font-size: 12px;
+      padding-left: 6px;
+      word-break: keep-all;
+    }
+
+    .legend-value-row::before {
+      position: absolute;
+      left: -2px;
+      top: 6px;
+      content: '';
+      width: 6px;
+      height: 2px;
+      background-color: #828181;
+    }
+  </style>
+  <script type="text/javascript" src="http://localhost:81/mapcat/api.js"></script>
+  <script src="https://mapv.baidu.com/gl/examples/static/common.js"></script>
+  <script type="text/javascript" src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.152/dist/mapvgl.min.js"></script>
+  <script src="https://mapv.baidu.com/build/mapv.min.js"></script>
+
+</head>
+
+<body>
+  <div class="caption">*演示数据，仅供参考</div>
+
+  <div id="map_container"></div>
+  <div id="tooltip"></div>
+
+  <div class="legend">
+    <div class="legend-img">
+      <img src="https://mapopen-website-wiki.bj.bcebos.com/solutions/jsdemoImages/linear2.png" />
+    </div>
+    <div class="legend-label">
+      <div class="legend-value-row" style="top: calc( 0% - 8px + 1px);">32度</div>
+      <div class="legend-value-row" style="top: calc( 20% - 8px);">29.4度</div>
+      <div class="legend-value-row" style="top: calc( 40% - 8px);">26.8度</div>
+      <div class="legend-value-row" style="top: calc( 60% - 8px);">24.2度</div>
+      <div class="legend-value-row" style="top: calc( 80% - 8px);">21.6度</div>
+      <div class="legend-value-row" style="top: calc( 100% - 8px - 1px);">19度</div>
+    </div>
+  </div>
+</body>
+
+</html>
+<script type="text/javascript">
+  var map = initMap({
+    center: [106.447151,29.547786],
+    zoom: 10
+  });
+
+  var view = new mapvgl.View({
+    map: map
+  });
+
+  var pixelLayer = new mapvgl.PixelLayer({
+    source: {
+      image: 'https://mapopen-pub-jsapigl.bj.bcebos.com/dem/dem-bj.png'
+    },
+    domain: [0, 2162],
+    noData: -32768, // 不显示数据
+    baseLine: 0,
+    elevationScale: 10,
+    opacity: .75,
+    isTerrain: true,
+    gridRowMax: 100,
+    gridColMax: 100,
+    fomularJS: function (rgb) {
+      return 32. - (rgb.r + rgb.g * 256 + rgb.b * 65536) / 1000. * 6.;
+    },
+    fomularC: `
+            float generateValue(vec4 rgb){
+               return rgb.r * 255. + rgb.g * 255. * 256. + rgb.b * 255. * 65536.;
+            }
+        `,
+    // refImage: {
+    //     url: 'https://mapopen-pub-jsapigl.bj.bcebos.com/dem/rgb-bj.png',
+    //     noTextureData: [0, 0, 0],
+    // },
+    refColors: {
+      colors: ['#c20a35', '#cb5025', '#d65db1', '#4150d5', '#268b9c'],
+      positions: [0, 0.2, 0.6, 0.8, 1.0]
+    },
+    depthTest: true,
+    depthMask: true,
+    enablePicked: true,
+    onClick: e => {
+      console.log('当前鼠标点温度：' + e.dataIndexe.toFixed(2) + '度');
+    },
+    onMousemove: e => {
+      var div = document.querySelector('#tooltip');
+      if (e.dataIndex) {
+        div.style.display = 'block';
+        div.innerText = '当前鼠标点温度：' + e.dataIndex.toFixed(2) + '度';
+      } else {
+        div.style.display = 'none';
+      }
+    }
+  });
+
+  var tileBounds = [115.42998373729408, 39.44559883470555, 117.5134454103027, 41.06713175801901];
+
+  // 设置图像范围
+  pixelLayer.setData([{
+    geometry: {
+      "type": "Polygon",
+      "coordinates": [[
+        [tileBounds[0], tileBounds[1], 0],
+        [tileBounds[0], tileBounds[3], 0],
+        [tileBounds[2], tileBounds[3], 0],
+        [tileBounds[2], tileBounds[1], 0]
+      ]]
+    }
+  }]);
+  view.addLayer(pixelLayer);
+</script>

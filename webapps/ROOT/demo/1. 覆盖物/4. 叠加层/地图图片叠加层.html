@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>地面图片叠加层</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+
+</html>
+<script>
+  var map = new BMapGL.Map('container');
+  map.centerAndZoom(new BMapGL.Point(117.200, 36.2437), 18);
+  map.enableScrollWheelZoom(true);
+  map.setTilt(45);
+  map.setDisplayOptions({
+    poiText: false,  // 隐藏poi标注
+    poiIcon: false,  // 隐藏poi图标
+    building: false  // 隐藏楼块
+  });
+
+
+  var pStart = new BMapGL.Point(117.19635, 36.24093);
+  var pEnd = new BMapGL.Point(117.20350, 36.24764);
+  var bounds = new BMapGL.Bounds(new BMapGL.Point(pStart.lng, pEnd.lat), new BMapGL.Point(pEnd.lng, pStart.lat));
+  var imgOverlay = new BMapGL.GroundOverlay(bounds, {
+    type: 'image',
+    url: '/jsdemo/img/shouhuimap.png',
+    opacity: 1
+  });
+  map.addOverlay(imgOverlay);
+
+
+</script>

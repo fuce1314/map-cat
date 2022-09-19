@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>全景图</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    .info {
+      z-index: 999;
+      width: auto;
+      min-width: 22rem;
+      padding: .75rem 1.25rem;
+      margin-left: 1.25rem;
+      position: fixed;
+      top: 1rem;
+      background-color: #fff;
+      border-radius: .25rem;
+      font-size: 14px;
+      color: #666;
+      box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+  </style>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+
+</html>
+<script>
+  /* global BMapGL */
+  var map = new BMapGL.Map('container', {
+    maxZoom: 21,
+  });
+  var point = new BMapGL.Point(116.403850, 39.913795);
+  map.centerAndZoom(point, 10);
+  map.enableScrollWheelZoom();
+
+  // 添加全景图层
+  map.addTileLayer(new BMapGL.PanoramaCoverageLayer());
+
+  // 添加全景控件
+  var stCtrl = new BMapGL.PanoramaControl();
+  stCtrl.setOffset(new BMapGL.Size(0, 0));
+  map.addControl(stCtrl);
+</script>

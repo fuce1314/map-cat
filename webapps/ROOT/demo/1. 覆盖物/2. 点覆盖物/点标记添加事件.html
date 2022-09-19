@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>点标记添加点击事件</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+
+</html>
+<script>
+  var map = new BMapGL.Map('container');
+  var point = new BMapGL.Point(116.404, 39.925);
+  map.centerAndZoom(point, 15);
+  // 创建点标记
+  var marker = new BMapGL.Marker(point);
+  map.addOverlay(marker);
+  // 创建信息窗口
+  var opts = {
+    width: 200,
+    height: 100,
+    title: '故宫博物院'
+  };
+  var infoWindow = new BMapGL.InfoWindow('地址：北京市东城区王府井大街88号乐天银泰百货八层', opts);
+  // 点标记添加点击事件
+  marker.addEventListener('click', function () {
+    map.openInfoWindow(infoWindow, point); // 开启信息窗口
+  });
+</script>

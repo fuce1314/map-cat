@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>地面视频叠加层</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script src="http://localhost:81/mapcat/api.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+
+</html>
+<script>
+  var map = new BMapGL.Map('container');
+  map.centerAndZoom(new BMapGL.Point(119.308, 25.668), 4);
+  map.enableScrollWheelZoom(true);
+
+  // 增加地面视频叠加层
+  var pStart = new BMapGL.Point(94.582033, -7.989754);
+  var pEnd = new BMapGL.Point(145.358572, 30.813867);
+  var bounds = new BMapGL.Bounds(new BMapGL.Point(pStart.lng, pEnd.lat), new BMapGL.Point(pEnd.lng, pStart.lat));
+  var imgOverlay = new BMapGL.GroundOverlay(bounds, {
+    type: 'video',
+    url: '/jsdemo/img/cloud.mov',
+    opacity: 0.5
+  });
+  map.addOverlay(imgOverlay);
+
+</script>
