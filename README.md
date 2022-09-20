@@ -34,3 +34,11 @@
 
 
 ![img.png](md_Img/yxxg3.png)
+
+
+# 全新调试模式
+
+![img.png](md_Img/debug.png)
+
+
+![img.png](md_Img/debug2.png)
