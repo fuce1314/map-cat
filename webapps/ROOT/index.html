@@ -96,22 +96,8 @@
 	</style>
 </head>
 <body>
-
-	
 		<div class = "info2">
-        <div class="selbox">
-            <span>选择省份</span>
-            <select name="sel-list" id="prolist" onchange="changeProvince(this)">
-                <option value="-1">选择省份</option>
-            </select>
-        </div>
-        <div class="selbox">
-            <span>选择层级</span>
-            <select name="sel-list" onchange="changeDepth(this)">
-                <option value="0">省级行政区-0</option>
-                <option selected value="1">市级行政区-1</option>
-                <option value="2">区/县级行政区-2</option>
-            </select>
+           地图层级:<sapn id="zoom_span">13</sapn>
         </div>
 	</div>
 	<div id="map_container"></div>
@@ -140,6 +126,7 @@
       map.addEventListener("zoomend", function(e){
         var ZoomNum = map.getZoom();
         console.log("当前地图层级"+ZoomNum)
+		document.getElementById("zoom_span").innerHTML=ZoomNum;
       });
 	
 	var data = [{
