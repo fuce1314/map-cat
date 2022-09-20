@@ -18,7 +18,7 @@
       font-family: "微软雅黑";
     }
   </style>
-  <script src="http://localhost:81/mapcat/api.js"></script>
+  <script src="/mapcat/api.js"></script>
 </head>
 
 <body>
@@ -28,10 +28,10 @@
 </html>
 <script>
   var map = new BMapGL.Map('container');
-  map.centerAndZoom(new BMapGL.Point(116.280, 40.049), 18);
+  map.centerAndZoom(new BMapGL.Point(106.447151,29.547786), 18);
   map.enableScrollWheelZoom(true);
   var opts = {
-    position: new BMapGL.Point(116.2787, 40.0492), // 指定文本标注所在的地理位置
+    position: new BMapGL.Point(106.447151,29.547786), // 指定文本标注所在的地理位置
     offset: new BMapGL.Size(30, -30) // 设置文本偏移量
   };
   // 创建文本标注对象
