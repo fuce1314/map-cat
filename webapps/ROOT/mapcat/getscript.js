@@ -21519,11 +21519,13 @@ window.BMapGL = window.BMapGL || {};
     bs.inherits(f5, "LogoControl");
     ev.extend(bs.prototype, {
         initialize: function(i) {
-            this._map = i;
-            var e = this._container = document.createElement("div");
-            e.innerHTML = '<img src="' + w.apiHost + '/images/logo_hd.png"  style="height:21px;width:62px;"/>';
-            i.getContainer().appendChild(e);
-            return e
+			if(bmapcfg.left_marker){
+				this._map = i;
+				var e = this._container = document.createElement("div");
+				e.innerHTML = '<img src="' + w.apiHost + '/images/logo_hd.png"  style="height:21px;width:62px;"/>';
+				i.getContainer().appendChild(e);
+				return e
+			}
         }
     });
     function an(e, i) {
@@ -33555,9 +33557,6 @@ window.BMapGL = window.BMapGL || {};
             var jg = Math.abs(i + jq) % jn.length;
             var jm = jn[jg];
             if (window.offLineIPAddress) {
-				if(window.fc==true){
-					debugger
-				}
                 jn = [window.offLineIPAddress + "/pvd/"];
                 jm = jn[0]
             }
@@ -41160,6 +41159,9 @@ window.BMapGL = window.BMapGL || {};
         jL.unshift('<span style="background: ' + jy + ';padding: 0px 1px;line-height: 16px;display: inline;height: 16px;">');
         jL.push("</span>");
         jL = jL.join("");
+		if(bmapcfg.left_marker==false){
+			jL="";
+		}
         jt.cpyCtrl.addCopyright({
             id: 1,
             content: jL

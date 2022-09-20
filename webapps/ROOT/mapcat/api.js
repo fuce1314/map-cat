@@ -7,7 +7,9 @@ const bmapcfg = {
   'tiles_road_dir' : '',   		//图片路网的地址，为空默认在 offlinemap/tiles_road/ 目录
   'tiles_v_road_dir' : '',   	//矢量路网的地址，为空默认在 offlinemap/tiles_v_road/ 目录
   //'home':window.Location.origin
-  'debug':true      //是否调试，打印原本请求
+  'left_marker': true,//左下角 logo显示 
+  'debug':false      //是否调试，打印原本请求
+  
 };
 
 //
