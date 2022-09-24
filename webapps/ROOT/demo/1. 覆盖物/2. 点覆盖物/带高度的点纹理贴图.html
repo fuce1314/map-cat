@@ -66,7 +66,6 @@
   var cityGeo = new BMapGL.Geocoder();
   for (let i = 0; i < citys.length; i++) {
     cityGeo.getPoint(citys[i].name, function (point) { // 地址解析获取对应经纬度
-	alert("xx");
       var pt = new BMapGL.Point(point.lng, point.lat);
       var icon = new BMapGL.Icon(citys[i].img, new BMapGL.Size(40, 40));
       var marker = new BMapGL.Marker3D(pt, Math.round(Math.random()) * 6000, {

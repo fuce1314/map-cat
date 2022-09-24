@@ -19015,21 +19015,12 @@ window.BMapGL = window.BMapGL || {};
                     })
                 }
             }
-			//本地加载测试
 			if(je.src.indexOf("/mapcat/?qt=verify&v=gl&type=webgl&ak=R4pWCxXH9qm9ZpbnppGyxUGKydAd6esD&callback=BMapGL.bmapVerifyCbk")!=-1){
 				je.src=w.apiHost+"/BMapGL.bmapVerifyCbk.js"
 			}
 			if(je.src.indexOf("/dlswbr.baidu.com/heicha/mw/abclite-2063-s.js")!=-1){
 				//je.src=w.apiHost+"/abclite-2063-s.js"
 				je.src="";
-			}
-			//debugger
-			if(je.src.indexOf("qt=cen&b=10866731.581016274%2C3287072.995614085%3B12832811.581016274%2C3561504.995614085&l=8&ie=utf-8&oue=1&fromproduct=jsapi&callback=BMapGL._rd._cbk11173&ak=R4pWCxXH9qm9ZpbnppGyxUGKydAd6esD&v=gl&seckey=UygtcYaKEtlAHguyn895ep0HL7I8AopydwDZYrgeZ%2BQ%3D%2COMePdltIAhxfFeWdyQPIRq9FAZl1kLLxaeduOqXJvUCz2FLCjfob2ekmY8IZFWjxAhetbn6brWUCP9Ohu4JJt1fFcdb1ShN6Es1Fqcve8LUt9pf9_cF-z0tCdE-Nz2PAC4NSUBNqyMP8X_rvEkmD1rFLob1IiYWVSuAk8J6XfkHngJBoDivyF67Q7jaDh0j1&timeStamp=1663994692414&sign=a7b6c37542c0")!=-1){
-				//je.src=w.apiHost+"/abclite-2063-s.js"
-				je.src="";
-			}
-			if(""){
-				
 			}
 			
 			//console.log(je);
@@ -20880,8 +20871,8 @@ window.BMapGL = window.BMapGL || {};
                 jo = ir(ji, encodeURIComponent);
                 jf = ir(ji)
             }
-            var i = "//api.map.baidu.com" + "/" + jp + "?" + jo + "&ie=utf-8&oue=1&fromproduct=jsapi";
-            var jk = "//api.map.baidu.com" + "/" + jp + "?" + jf + "&ie=utf-8&oue=1&fromproduct=jsapi";
+            var i = w.apiHost + "/" + jp + "?" + jo + "&ie=utf-8&oue=1&fromproduct=jsapi";
+            var jk = w.apiHost + "/" + jp + "?" + jf + "&ie=utf-8&oue=1&fromproduct=jsapi";
             if (!jg) {
                 i += "&res=api";
                 jk += "&res=api"
@@ -20896,8 +20887,7 @@ window.BMapGL = window.BMapGL || {};
             jk += "&ak=" + el + "&v=gl&seckey=" + T + "&timeStamp=" + jj;
             i += iu()(jk);
             //原来的
-			//debugger
-			ga.load(i)
+			//ga.load(i)
         },
         getSeckeyCidItem: function(i) {
             if (navigator.cookieEnabled) {
@@ -37020,14 +37010,16 @@ var gq = {
       maeia: fx("0x37"),
       aheml: fx("0x38"),
       milam:
-        bmapcfg.home+"/res/webgl/10/worker_wasm_4i3lbq.js",
+        (window.location.protocol === "http:" ? "http:" : "https:") +
+        "//api.map.baidu.com/res/webgl/10/worker_wasm_4i3lbq.js",
       eiimm: function (a, T) {
         return a < T;
       },
       cieah: fx("0x39"),
       caxea: fx("0x3a"),
       hhaec:
-        bmapcfg.home+"/res/webgl/10/worker_asm_44f4nb.js",
+        (window.location.protocol === "http:" ? "http:" : "https:") +
+        "//api.map.baidu.com/res/webgl/10/worker_asm_44f4nb.js",
       edclx: function (a, T) {
         return a > T;
       },

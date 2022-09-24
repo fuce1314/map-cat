@@ -30,14 +30,13 @@
   var map = new BMapGL.Map('container', {
     restrictCenter: false
   });
-  var point = new BMapGL.Point(118.6614, 36.2190);
+  var point = new BMapGL.Point(106.447151,29.547786);
   map.centerAndZoom(point, 8);
   map.enableScrollWheelZoom();
 
-  var citys = ['济南市', '青岛市', '烟台市', '潍坊市', '淄博市', '威海市', '济宁市', '东营市',
-    '泰安市', '德州市', '聊城市', '滨州市', '枣庄市', '菏泽市', '日照市', '莱芜市', '临沂市'];
+  var citys = ['沙坪坝区', '九龙坡区', '渝北区'];
   var bdary = new BMapGL.Boundary();
-  bdary.get('山东省', function (rs) {
+  bdary.get('重庆省', function (rs) {
     // 绘制行政区
     map.clearOverlays();
     var count = rs.boundaries.length;
